@@ -48,6 +48,7 @@ const getPatientById = async (id) => {
 
 const createPatient = async (newData) => {
   try {
+    console.log(newData);
     let hashed = bcrypt.hashSync(newData.password, salt);
     newData.password = hashed;
 
