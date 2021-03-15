@@ -10,7 +10,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var patientsRouter = require("./routes/patients");
 var doctorsRouter = require("./routes/doctors");
-var reportRouter = require("./routes/medical_reports");
+var reportRouter = require("./routes/diagnostic_report");
+var medicationState = require("./routes/medication_statement");
 //config
 const config = require("./config");
 const mongoose = require("mongoose");
@@ -18,7 +19,7 @@ const mongoose = require("mongoose");
 //database setup
 var uri = `${config.MONGO_URI}/${config.DB_NAME}`; //local dbase
 var uri2 = config.MONGO_URII.toString(); //remote dbase (mongodb atlas)
-var connect = mongoose.connect(uri2, {
+var connect = mongoose.connect(uri, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
@@ -48,6 +49,7 @@ app.use("/users", usersRouter);
 app.use("/patients", patientsRouter);
 app.use("/doctors", doctorsRouter);
 app.use("/reports", reportRouter);
+app.use("/medicationState", medicationState);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
