@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
   return response_generator(stat, data, res);
 });
 
-router.get("username/:username", async (req, res) => {
+router.get("/username/:username", async (req, res) => {
   let username = req.params.username;
   const data = await getPatientByUsername(username);
   const stat = data.status == "OK" ? 200 : 500;
