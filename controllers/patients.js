@@ -8,10 +8,10 @@ const { result_controller } = require("../middleware");
 
 const isExist = async (uname) => {
   try {
-    let found = await Patient.find({
+    let found = await Patient.findOne({
       "extension.username": uname,
     }).exec();
-    if (found.length) {
+    if (found) {
       return true;
     } else return false;
   } catch (error) {
@@ -35,11 +35,11 @@ const getPatientByUsername = async (usernameQuery) => {
     const patientData = await Patient.findOne({
       "extension.username": usernameQuery,
     }).exec();
-    if (patientData.length) {
+    if (patientData) {
       //if data found
       return result_controller("OK", patientData);
     } else {
-      return result_controller("ERROR data not found!", patientData);
+      return result_controller("ERROR data not found!", null);
     }
   } catch (error) {
     console.error(error);
