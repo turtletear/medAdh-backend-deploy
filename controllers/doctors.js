@@ -32,7 +32,7 @@ const getAllDoctors = async () => {
 
 const getDoctorByUsername = async (username) => {
   try {
-    const doctorData = await Doctor.find({
+    const doctorData = await Doctor.findOne({
       "extension.username": username,
     }).exec();
     if (doctorData.length) {
