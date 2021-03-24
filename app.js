@@ -23,7 +23,7 @@ var { patientJWTAuth, doctorJWTAuth } = require("./middleware/auth");
 //database setup
 var uri = `${config.MONGO_URI}/${config.DB_NAME}`; //local dbase
 var uri2 = config.MONGO_URII.toString(); //remote dbase (mongodb atlas)
-var connect = mongoose.connect(uri, {
+var connect = mongoose.connect(uri2, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
