@@ -54,7 +54,7 @@ const loginPatient = async (username, password) => {
           ...login,
           token: token,
         };
-        return result_controller("OK", authData);
+        return authData;
       } else {
         return result_controller("UNAUTHORIZED", null);
       }
@@ -99,7 +99,7 @@ const loginDoctor = async (username, password) => {
           ...login,
           token: token,
         };
-        return result_controller("OK", authData);
+        return authData;
       } else {
         return result_controller("UNAUTHORIZED", null);
       }
