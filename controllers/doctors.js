@@ -39,7 +39,7 @@ const getDoctorByUsername = async (username) => {
       //if data found
       return result_controller("OK", doctorData);
     } else {
-      return result_controller("ERROR data not found!", null);
+      return result_controller("ERROR user not found!", null);
     }
   } catch (error) {
     console.error(error);
