@@ -12,7 +12,6 @@ const { response_generator } = require("../middleware");
 router.post("/login/patients", async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
-  console.log(req.body);
   const response = await loginPatient(username, password);
 
   let statusCode = 200;
