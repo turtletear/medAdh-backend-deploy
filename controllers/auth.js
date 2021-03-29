@@ -68,8 +68,8 @@ const loginPatient = async (username, password) => {
 // DOCTOR AUTH
 const signupDoctor = async (newData) => {
   try {
-    const patient = await createPatient(newData);
-    return patient;
+    const doctor = await createDoctor(newData);
+    return doctor;
   } catch (error) {
     console.error(error);
     return result_controller("ERROR", null);
