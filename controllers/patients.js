@@ -64,6 +64,7 @@ const getPatientById = async (id) => {
 
 const createPatient = async (newData) => {
   try {
+    console.log("error disini");
     let uname = newData.extension.username;
     let found = await isExist(uname);
     if (!found) {
