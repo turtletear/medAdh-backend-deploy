@@ -50,4 +50,13 @@ router.post("/login/doctors", async (req, res) => {
   return response_generator(statusCode, response, res);
 });
 
+router.post("/regis/doctors", async (req, res) => {
+  let data = req.body;
+  console.log("data created: ", data);
+  const response = await signupDoctor(data);
+  const stat = data.status == "OK" ? 200 : 500;
+
+  return response_generator(stat, response, res);
+});
+
 module.exports = router;
