@@ -91,7 +91,7 @@ const loginDoctor = async (username, password) => {
           { id: login.data._id, role: login.data.resourceType },
           config.SECRET,
           {
-            expiresIn: "1h",
+            expiresIn: "3d",
           }
         );
 
