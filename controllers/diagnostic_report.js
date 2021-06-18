@@ -1,6 +1,9 @@
 const DiagReports = require("../models/DiagnosticReport");
 const Patients = require("../models/patientResource");
+const Mongoose = require("mongoose");
 const { result_controller } = require("../middleware");
+
+const { getPatientById } = require("./patients");
 
 const getAllReport = async () => {
   try {
@@ -18,7 +21,7 @@ const getReportById = async (id) => {
     if (reportData) {
       return result_controller("OK", reportData);
     } else {
-      return result_controller("ERROR Data not found", reportData);
+      return result_controller("ERROR Data not found", null);
     }
   } catch (error) {
     console.error(error.message);
@@ -28,17 +31,52 @@ const getReportById = async (id) => {
 
 const getReportByPatientId = async (patientId) => {
   try {
+    let checkPatient = await getPatientById(patientId);
+    if (checkPatient.data != null) {
+      let reportData = await Patients.findById(patientId).populate({
+        path: "extension.diagnosticReport",
+        model: "DiagnosticReport",
+      });
+      return result_controller("OK", reportData.extension.diagnosticReport);
+    } else {
+      return result_controller("ERROR patient not found", null);
+    }
   } catch (error) {
     console.error(error.message);
+    return result_controller("ERROR", null);
+  }
+};
+
+const getSingleReportByPatientId = async (patientId, reportId) => {
+  try {
+    let checkPatient = await getPatientById(patientId);
+    if (checkPatient.data != null) {
+      let reportData = await Patients.findById(patientId).populate({
+        path: "extension.diagnosticReport",
+        model: "DiagnosticReport",
+        match: { _id: reportId },
+      });
+      if (reportData.extension.diagnosticReport.length != 0) {
+        return result_controller("OK", reportData.extension.diagnosticReport);
+      } else {
+        return result_controller("ERROR report not found", null);
+      }
+    } else {
+      return result_controller("ERROR patient not found", null);
+    }
+  } catch (error) {
+    console.error(error.message);
+    return result_controller("ERROR", null);
   }
 };
 
 const updatePatientReport = async (patientId, reportId) => {
   try {
+    reportObjectId = Mongoose.Types.ObjectId(reportId);
     const result = await Patients.findByIdAndUpdate(
       patientId,
       {
-        $push: { "extension.diagnosticReport": reportId },
+        $push: { "extension.diagnosticReport": reportObjectId },
       },
       { new: true }
     );
@@ -51,11 +89,19 @@ const updatePatientReport = async (patientId, reportId) => {
 
 const createReport = async (newData) => {
   try {
-    const reportData = await DiagReports.create(newData);
     let patientId = newData.subject;
-    let reportId = reportData.id;
-    const updatePatient = await updatePatientReport(patientId, reportId);
-    return result_controller("OK", reportData);
+    let patientObjectId = Mongoose.Types.ObjectId(patientId);
+    newData.subject = patientObjectId;
+    let checkPatient = await getPatientById(patientId);
+
+    if (checkPatient.data != null) {
+      const reportData = await DiagReports.create(newData);
+      let reportId = reportData.id;
+      const updatePatient = await updatePatientReport(patientId, reportId);
+      return result_controller("OK", reportData);
+    } else {
+      return result_controller("ERROR Patient Id not found", null);
+    }
   } catch (error) {
     console.error(error.message);
     return result_controller("ERROR", null);
@@ -98,15 +144,20 @@ const removePatientReport = async (patientId, reportId) => {
 
 const deleteReportById = async (patientId, reportId) => {
   try {
-    const result = await removePatientReport(patientId, reportId);
-    const deletedData = await DiagReports.findByIdAndRemove(reportId).exec();
-    if (deletedData && result) {
-      return result_controller("OK", deletedData);
+    let checkPatient = await getPatientById(patientId);
+    if (checkPatient.data != null) {
+      const deletedData = await DiagReports.findByIdAndRemove(reportId).exec();
+      if (deletedData != null) {
+        const result = await removePatientReport(patientId, reportId);
+        return result_controller("OK", deletedData);
+      } else {
+        return result_controller(
+          "ERROR, dignostic report data not found",
+          null
+        );
+      }
     } else {
-      return result_controller(
-        "ERROR, dignostic report or patient data not found",
-        deletedData
-      );
+      return result_controller("ERROR, patient data not found", null);
     }
   } catch (error) {
     console.error(error.message);
@@ -116,6 +167,8 @@ const deleteReportById = async (patientId, reportId) => {
 module.exports = {
   getAllReport,
   getReportById,
+  getReportByPatientId,
+  getSingleReportByPatientId,
   createReport,
   updateReportById,
   deleteReportById,
