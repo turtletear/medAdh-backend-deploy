@@ -9,6 +9,7 @@ const {
   getAllPatients,
   createPatient,
   getPatientByUsername,
+  getDoctorByPatientId,
   getPatientById,
   updatePatientById,
   deletePatientById,

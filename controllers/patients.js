@@ -135,6 +135,7 @@ module.exports = {
   getAllPatients,
   createPatient,
   getPatientByUsername,
+  getDoctorByPatientId,
   getPatientById,
   updatePatientById,
   deletePatientById,
